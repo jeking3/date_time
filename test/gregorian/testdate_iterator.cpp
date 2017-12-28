@@ -55,6 +55,25 @@ main()
   check("base iterator", data == result); 
   std::cout << data << std::endl;
 
+  // trac-11067
+  { 
+    date some_date(2005, Aug, 9);
+    month_iterator m_i(some_date, 1);
+    // test postfix operators
+    date chk = *m_i++;
+    check_equal("postfix increment month_iterator ok", Aug, chk.month());
+    chk = *m_i;
+    check_equal("postfix increment month_iterator ok (value after)", Sep, chk.month());
+    chk = *m_i--;
+    check_equal("postfix decrement month_iterator ok", Sep, chk.month());
+    chk = *m_i;
+    check_equal("postfix decrement month_iterator ok (value after)", Aug, chk.month());
+    // test prefix operators
+    chk = *--m_i;
+    check_equal("prefix decrement month_iterator ok", Jul, chk.month());
+    chk = *++m_i;
+    check_equal("prefix increment month_iterator ok", Aug, chk.month());
+  }
 
   typedef boost::date_time::day_functor<date> dfg;
   
