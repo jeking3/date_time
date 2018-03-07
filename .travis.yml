@@ -74,6 +74,22 @@ jobs:
     #################### Jobs to run on every pull request ####################
     - os: linux
       env: 
+        - COMMENT=CodeCov
+        - TOOLSET=gcc-7
+      addons:
+        apt:
+          packages:
+            - gcc-7
+            - g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+      script:
+        - pushd /tmp && git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo make install && which lcov && lcov --version && popd
+        - cd libs/$SELF
+        - ci/codecov.sh
+
+    - os: linux
+      env: 
         - COMMENT="C++03"
         - TOOLSET=gcc,gcc-7
       addons:
@@ -129,22 +145,6 @@ jobs:
             - g++-7
           sources:
             - ubuntu-toolchain-r-test
-
-    - os: linux
-      env: 
-        - COMMENT=CodeCov
-        - TOOLSET=gcc-7
-      addons:
-        apt:
-          packages:
-            - gcc-7
-            - g++-7
-            - lcov
-          sources:
-            - ubuntu-toolchain-r-test
-      script:
-        - cd libs/$SELF
-        - ci/codecov.sh
 
   # osx was disabled because it is very slow to start (can delay builds by 30 minutes)
   # - os: osx
