@@ -69,6 +69,10 @@ script:
   - cd libs/$SELF
   - ci/build.sh
 
+matrix:
+  allow_failures:
+    - env: IGNOREFAIL=1
+
 jobs:
   include:
     #################### Jobs to run on every pull request ####################
@@ -157,10 +161,11 @@ jobs:
  
     # Coverity Scan
     - os: linux
-      if: (branch IN (develop, master)) AND (type IN (cron, push))
+      if: ((repo = boostorg/date_time) AND (branch IN (develop, master)) AND (type IN (cron, push))) OR ((repo = jeking3/date_time) AND (branch = develop) AND (type = pull_request))
       env:
         - COMMENT="Coverity Scan"
         - TOOLSET=gcc
+        - IGNOREFAIL=1
       script:
         - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
         - cd libs/$SELF
