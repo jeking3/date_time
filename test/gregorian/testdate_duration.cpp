@@ -67,11 +67,18 @@ void test_date_duration()
 //   dd++;
 //   check("Increment",             dd == twoDays);
 
+  // Boost Trac 13150
+  {
+    date d1(1500, 6, 1);
+    date d2(4500, 6, 1);
+    years duration = years(3000);
+    date d3 = d1 + duration;
+    check("adding 3000 years works", d3 == d2);
+  }
 }
 
 int main() {
   test_date_duration();
   return printTestStats();
-
 }
 
